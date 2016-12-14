@@ -57,6 +57,7 @@
 <body>
 <table class="tg">
     <tr>
+        <th>ID</th>
         <th>Калории</th>
         <th>Дата</th>
         <th>Описание</th>
@@ -71,6 +72,7 @@
                 <tr class="notexceed">
             </c:otherwise>
         </c:choose>
+        <td>${meal.id}</td>
         <td>${meal.calories}</td>
         <td>${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}</td>
         <td>${meal.description}</td>
@@ -85,5 +87,25 @@
         </tr>
     </c:forEach>
 </table>
+<br>
+<br>
+<form name="meals" action="<%request.getContextPath();%>meals" method="post">
+    <label for="id">ID</label><br>
+    <input type="text" name="id" id="id"><br>
+    <label for="calories">Calories</label><br>
+    <input type="text" name="calories" id="calories"><br>
+    <label for="date">Date</label><br>
+    <input type="datetime-local" name="date" id="date"><br>
+    <label for="description">Description</label><br>
+    <input type="text" name="description" id="description"><br>
+    <input type="radio" name="operation" id="create" value="create" checked>
+    <label for="create">Create</label><br>
+    <input type="radio" name="operation" id="update" value="update">
+    <label for="update">Update</label><br>
+    <input type="radio" name="operation" id="delete" value="delete">
+    <label for="delete">Delete</label><br><br>
+    <input type="submit" value="Submit">
+</form>
+
 </body>
 </html>
