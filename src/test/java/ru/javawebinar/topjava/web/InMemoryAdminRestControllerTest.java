@@ -22,7 +22,7 @@ public class InMemoryAdminRestControllerTest {
     private static DbPopulator populator;
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app-test.xml", "spring/spring-db.xml");
         System.out.println("\n" + Arrays.toString(appCtx.getBeanDefinitionNames()) + "\n");
         controller = appCtx.getBean(AdminRestController.class);
         populator = appCtx.getBean(DbPopulator.class);
@@ -36,11 +36,11 @@ public class InMemoryAdminRestControllerTest {
     @Before
     public void setUp() throws Exception {
         // Re-initialize
-        populator.execute();
-//        UserRepository repository = appCtx.getBean(UserRepository.class);
-//        repository.getAll().forEach(u -> repository.delete(u.getId()));
-//        repository.save(USER);
-//        repository.save(ADMIN);
+//        populator.execute();
+        UserRepository repository = appCtx.getBean(UserRepository.class);
+        repository.getAll().forEach(u -> repository.delete(u.getId()));
+        repository.save(USER);
+        repository.save(ADMIN);
     }
 
     @Test
