@@ -1,3 +1,7 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/73ad75a5ae5e421196eb60ebc05a879b)](https://www.codacy.com/app/simonkorobov/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Fishbonne/topjava&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/Fishbonne/topjava.svg?branch=master)](https://travis-ci.org/Fishbonne/topjava)
+[![Dependency Status](https://dependencyci.com/github/Fishbonne/topjava/badge)](https://dependencyci.com/github/Fishbonne/topjava)
+
 Java Enterprise Online Project 
 ===============================
 Наиболее востребованные технологии /инструменты / фреймворки Java Enterprise:
