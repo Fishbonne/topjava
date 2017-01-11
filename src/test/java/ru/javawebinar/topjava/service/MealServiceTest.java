@@ -1,7 +1,15 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,6 +21,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -25,9 +36,53 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-
+    private static Logger LOG = LoggerFactory.getLogger(MealServiceTest.class);
     @Autowired
     private MealService service;
+
+    private static Map<String, Long> testsRuntime = new HashMap<>();
+
+    @AfterClass
+    public static void showStats() {
+        for (Map.Entry<String, Long> pair : testsRuntime.entrySet()) {
+            LOG.info(pair.getKey() + " - " + pair.getValue() + " ms");
+        }
+    }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Rule
+    public final Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        public long runtime(TimeUnit unit) {
+            return super.runtime(unit);
+        }
+
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            LOG.info("Succeded " + description.getMethodName() + " " + nanos / 1000000 + " ms");
+            testsRuntime.put(description.getMethodName(), nanos / 1000000);
+//            super.succeeded(nanos, description);
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            LOG.info("Failed " + description.getMethodName() + " " + nanos / 1000000 + " ms");
+            testsRuntime.put(description.getMethodName(), nanos / 1000000);
+//            super.failed(nanos, e, description);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            super.skipped(nanos, e, description);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            super.finished(nanos, description);
+        }
+    };
 
     @Test
     public void testDelete() throws Exception {
@@ -35,8 +90,9 @@ public class MealServiceTest {
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2), service.getAll(USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testDeleteNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
         service.delete(MEAL1_ID, 1);
     }
 
@@ -53,8 +109,9 @@ public class MealServiceTest {
         MATCHER.assertEquals(ADMIN_MEAL1, actual);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testGetNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
@@ -65,8 +122,9 @@ public class MealServiceTest {
         MATCHER.assertEquals(updated, service.get(MEAL1_ID, USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testUpdateNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
         service.update(MEAL1, ADMIN_ID);
     }
 
