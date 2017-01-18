@@ -27,7 +27,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(Profiles.ACTIVE_DB)
+@ActiveProfiles({Profiles.ACTIVE_DB, "datajpa"})
 public class UserServiceTest {
 
     @Autowired
@@ -37,7 +37,7 @@ public class UserServiceTest {
     public void setUp() throws Exception {
         service.evictCache();
     }
-        
+
     @Test
     public void testSave() throws Exception {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, Collections.singleton(Role.ROLE_USER));
